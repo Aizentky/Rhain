@@ -1,27 +1,598 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bestiessss</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>777zent Matrix Console</title>
   <style>
-    body {
-      background-color: #000;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    :root{
+      --bg:#020403;
+      --panel:rgba(0,0,0,.72);
+      --line:rgba(0,255,136,.20);
+      --green:#00ff88;
+      --green2:#8fffc7;
+      --text:#d9ffeb;
+      --soft:#a9ffd2;
+      --warn:#ff4d6d;
     }
-    img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.3);
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+      font-family:Consolas, monospace;
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--green);
+      overflow:hidden;
+      min-height:100vh;
+    }
+
+    canvas{
+      position:fixed;
+      inset:0;
+      z-index:0;
+      opacity:.5;
+    }
+
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:1;
+      background:repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.03) 0px,
+        rgba(255,255,255,.03) 1px,
+        transparent 3px,
+        transparent 6px
+      );
+      mix-blend-mode:soft-light;
+    }
+
+    .wrap{
+      position:relative;
+      z-index:2;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+    }
+
+    .panel{
+      width:min(1180px,100%);
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:var(--panel);
+      box-shadow:0 0 40px rgba(0,255,136,.10), inset 0 0 20px rgba(0,255,136,.04);
+      backdrop-filter:blur(8px);
+      overflow:hidden;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      padding:14px 18px;
+      border-bottom:1px solid var(--line);
+      background:rgba(0,255,136,.04);
+    }
+
+    .left-top{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .dot{
+      width:11px;
+      height:11px;
+      border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 10px var(--green);
+    }
+
+    .brand{
+      color:var(--green2);
+      letter-spacing:1px;
+      text-shadow:0 0 10px rgba(0,255,136,.45);
+      font-size:.95rem;
+    }
+
+    .clock{
+      color:var(--soft);
+      font-size:.92rem;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr 1.35fr;
+      min-height:720px;
+    }
+
+    .hero{
+      padding:30px;
+      border-right:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(0,255,136,.04), rgba(0,255,136,.015));
+    }
+
+    .mega{
+      font-size:clamp(2.8rem,6vw,5.7rem);
+      font-weight:900;
+      line-height:.9;
+      color:#f0fff7;
+      text-transform:uppercase;
+      letter-spacing:2px;
+      text-shadow:
+        0 0 10px var(--green),
+        0 0 24px rgba(0,255,136,.40),
+        2px 0 0 rgba(255,0,85,.20),
+        -2px 0 0 rgba(0,255,255,.16);
+      animation:glitch 2.5s infinite;
+    }
+
+    .sub{
+      margin-top:18px;
+      color:var(--soft);
+      line-height:1.6;
+      font-size:1rem;
+      max-width:520px;
+    }
+
+    .printed{
+      margin-top:22px;
+      display:inline-block;
+      padding:10px 16px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:#fff;
+      box-shadow:0 0 18px rgba(0,255,136,.12);
+      text-shadow:0 0 10px var(--green);
+      animation:pulse 1.8s infinite alternate;
+    }
+
+    .bigprint{
+      margin-top:22px;
+      font-size:clamp(1.7rem,4vw,3.2rem);
+      color:#fff;
+      font-weight:900;
+      letter-spacing:3px;
+      text-shadow:0 0 10px var(--green), 0 0 24px rgba(0,255,136,.35);
+    }
+
+    .stats{
+      margin-top:24px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:14px;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      background:rgba(0,255,136,.03);
+      box-shadow:inset 0 0 16px rgba(0,255,136,.03);
+    }
+
+    .card .label{
+      color:var(--soft);
+      font-size:.9rem;
+      margin-bottom:8px;
+    }
+
+    .value{
+      font-size:1.55rem;
+      font-weight:800;
+      color:#fff;
+      text-shadow:0 0 10px rgba(0,255,136,.25);
+    }
+
+    .side{
+      padding:26px;
+      display:grid;
+      grid-template-rows:auto auto auto 1fr;
+      gap:14px;
+    }
+
+    .form-row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:7px;
+    }
+
+    .field label{
+      color:var(--soft);
+      font-size:.94rem;
+    }
+
+    .input{
+      width:100%;
+      padding:14px 15px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#04100b;
+      color:var(--green);
+      outline:none;
+      font-size:1rem;
+      box-shadow:inset 0 0 14px rgba(0,255,136,.05);
+    }
+
+    .input:focus{
+      border-color:rgba(0,255,136,.45);
+      box-shadow:0 0 14px rgba(0,255,136,.16), inset 0 0 14px rgba(0,255,136,.05);
+    }
+
+    .controls{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:none;
+      padding:14px 18px;
+      border-radius:14px;
+      font-weight:800;
+      font-size:1rem;
+      cursor:pointer;
+      transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+    }
+
+    .btn-main{
+      color:#03110a;
+      background:linear-gradient(90deg,var(--green),var(--green2));
+      box-shadow:0 0 18px rgba(0,255,136,.20);
+    }
+
+    .btn-alt{
+      color:var(--green2);
+      background:rgba(0,255,136,.06);
+      border:1px solid var(--line);
+    }
+
+    .btn:hover{
+      transform:translateY(-1px);
+    }
+
+    .progress-wrap{
+      height:18px;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#031008;
+    }
+
+    .progress{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--green),#e8fff4,var(--green2));
+      box-shadow:0 0 20px rgba(0,255,136,.4);
+      transition:width .15s linear;
+    }
+
+    .console-wrap{
+      display:grid;
+      grid-template-columns: 1fr 240px;
+      gap:14px;
+      min-height:0;
+    }
+
+    .console{
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:rgba(2,10,7,.92);
+      padding:16px;
+      overflow:auto;
+      white-space:pre-line;
+      line-height:1.55;
+      color:#b9ffd8;
+      min-height:420px;
+      max-height:480px;
+      box-shadow:inset 0 0 18px rgba(0,255,136,.05);
+    }
+
+    .mini{
+      display:grid;
+      gap:14px;
+    }
+
+    .mini .card{
+      min-height:110px;
+    }
+
+    .danger{
+      color:#ffd8e0;
+      font-size:.92rem;
+      line-height:1.5;
+    }
+
+    .footer{
+      text-align:center;
+      padding:14px;
+      border-top:1px solid var(--line);
+      background:rgba(0,255,136,.04);
+      color:var(--soft);
+      letter-spacing:1px;
+    }
+
+    @keyframes pulse{
+      from{transform:scale(1)}
+      to{transform:scale(1.03)}
+    }
+
+    @keyframes glitch{
+      0%,100%{transform:translate(0,0)}
+      20%{transform:translate(1px,-1px)}
+      40%{transform:translate(-1px,1px)}
+      60%{transform:translate(1px,0)}
+      80%{transform:translate(-1px,0)}
+    }
+
+    @media (max-width: 980px){
+      body{overflow:auto;}
+      .grid{grid-template-columns:1fr;}
+      .hero{border-right:none;border-bottom:1px solid var(--line);}
+      .console-wrap{grid-template-columns:1fr;}
+      .form-row{grid-template-columns:1fr;}
     }
   </style>
 </head>
 <body>
-  <img src="https://i.imgur.com/KUwo3t4.jpeg" alt="Bestiessss">
+  <canvas id="matrix"></canvas>
+
+  <div class="wrap">
+    <div class="panel">
+      <div class="topbar">
+        <div class="left-top">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="brand">MATRIX TASK CONSOLE // 777ZENT</div>
+        </div>
+        <div class="clock" id="clock">--:--:--</div>
+      </div>
+
+      <div class="grid">
+        <section class="hero">
+          <div class="mega">Matrix<br>Console</div>
+          <div class="sub">
+            High-style cyber interface with matrix rain, live console output, progress tracking,
+            and animated task counters.
+          </div>
+
+          <div class="printed">SYSTEM ONLINE</div>
+          <div class="bigprint">PRINTED BY 777ZENT</div>
+
+          <div class="stats">
+            <div class="card">
+              <div class="label">Target</div>
+              <div class="value" id="targetStat">---</div>
+            </div>
+            <div class="card">
+              <div class="label">Requested</div>
+              <div class="value" id="requestedStat">0</div>
+            </div>
+            <div class="card">
+              <div class="label">Done</div>
+              <div class="value" id="doneStat">0</div>
+            </div>
+            <div class="card">
+              <div class="label">Status</div>
+              <div class="value" id="statusStat">IDLE</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="side">
+          <div class="form-row">
+            <div class="field">
+              <label for="username">Username</label>
+              <input id="username" class="input" type="text" placeholder="Enter username">
+            </div>
+
+            <div class="field">
+              <label for="amount">Amount</label>
+              <input id="amount" class="input" type="number" min="1" max="500" placeholder="Enter amount">
+            </div>
+          </div>
+
+          <div class="controls">
+            <button class="btn btn-main" onclick="runSim()">START SEQUENCE</button>
+            <button class="btn btn-alt" onclick="resetSim()">RESET</button>
+          </div>
+
+          <div class="progress-wrap">
+            <div id="progress" class="progress"></div>
+          </div>
+
+          <div class="console-wrap">
+            <div id="console" class="console">[SYSTEM] Awaiting input...
+[INFO] Matrix engine ready.
+[INFO] Signature detected: 777zent
+[SAFE] Visual simulator only.</div>
+
+            <div class="mini">
+              <div class="card">
+                <div class="label">Sequence %</div>
+                <div class="value" id="percentStat">0%</div>
+              </div>
+              <div class="card">
+                <div class="label">Current Step</div>
+                <div class="value" id="stepStat">---</div>
+              </div>
+              <div class="card">
+                <div class="label">Mode</div>
+                <div class="value">SIM</div>
+              </div>
+              <div class="card danger">
+                Safe visual simulator only. No real reports, submissions, or outside actions happen.
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="footer">777zent // CYBER MATRIX INTERFACE</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+    const chars = "アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const fontSize = 16;
+    let columns = 0;
+    let drops = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      columns = Math.floor(canvas.width / fontSize);
+      drops = Array(columns).fill(1);
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(2, 4, 3, 0.09)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#00ff88";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+    setInterval(drawMatrix, 38);
+
+    function updateClock() {
+      const now = new Date();
+      const t = now.toLocaleTimeString();
+      document.getElementById("clock").textContent = t;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const consoleBox = document.getElementById("console");
+    const progress = document.getElementById("progress");
+    const targetStat = document.getElementById("targetStat");
+    const requestedStat = document.getElementById("requestedStat");
+    const doneStat = document.getElementById("doneStat");
+    const statusStat = document.getElementById("statusStat");
+    const percentStat = document.getElementById("percentStat");
+    const stepStat = document.getElementById("stepStat");
+
+    let running = false;
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function logLine(text) {
+      consoleBox.textContent += "\n" + text;
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
+
+    function setProgress(value) {
+      const clamped = Math.max(0, Math.min(100, value));
+      progress.style.width = clamped + "%";
+      percentStat.textContent = clamped + "%";
+    }
+
+    function resetSim() {
+      running = false;
+      consoleBox.textContent = "[SYSTEM] Awaiting input...\n[INFO] Matrix engine ready.\n[INFO] Signature detected: 777zent\n[SAFE] Visual simulator only.";
+      setProgress(0);
+      targetStat.textContent = "---";
+      requestedStat.textContent = "0";
+      doneStat.textContent = "0";
+      statusStat.textContent = "IDLE";
+      stepStat.textContent = "---";
+    }
+
+    async function runSim() {
+      if (running) return;
+
+      const username = document.getElementById("username").value.trim();
+      const amount = parseInt(document.getElementById("amount").value.trim(), 10);
+
+      if (!username || !amount || amount < 1) {
+        consoleBox.textContent = "[ERROR] Please enter a valid username and amount.";
+        setProgress(0);
+        return;
+      }
+
+      running = true;
+      consoleBox.textContent = "";
+      setProgress(0);
+
+      targetStat.textContent = username;
+      requestedStat.textContent = String(amount);
+      doneStat.textContent = "0";
+      statusStat.textContent = "RUNNING";
+      stepStat.textContent = "BOOT";
+
+      const bootLines = [
+        "[BOOT] Launching matrix core...",
+        "[LOAD] Importing neon modules...",
+        "[AUTH] Signature confirmed: 777zent",
+        `[INPUT] Username captured: ${username}`,
+        `[INPUT] Requested count: ${amount}`,
+        "[SYNC] Preparing task engine...",
+        "[LINK] Opening visual console...",
+        "[RUN] Starting sequence..."
+      ];
+
+      for (let i = 0; i < bootLines.length; i++) {
+        logLine(bootLines[i]);
+        stepStat.textContent = "BOOT " + (i + 1);
+        setProgress(Math.round(((i + 1) / (bootLines.length + amount)) * 100));
+        await sleep(180);
+        if (!running) return;
+      }
+
+      for (let i = 1; i <= amount; i++) {
+        const hash = Math.random().toString(16).slice(2, 10).toUpperCase();
+        logLine(`[TASK ${String(i).padStart(3, "0")}] Packet processed | HASH=${hash} | USER=${username}`);
+        doneStat.textContent = String(i);
+        stepStat.textContent = "TASK " + i;
+        setProgress(Math.round(((bootLines.length + i) / (bootLines.length + amount)) * 100));
+        await sleep(55);
+        if (!running) return;
+      }
+
+      logLine("");
+      logLine("=== SEQUENCE COMPLETE ===");
+      logLine(`Target       : ${username}`);
+      logLine(`Requested    : ${amount}`);
+      logLine(`Done         : ${amount}`);
+      logLine("Mode         : Matrix task simulator");
+      logLine("Printed by   : 777zent");
+      logLine("Status       : No real actions performed");
+
+      doneStat.textContent = String(amount);
+      statusStat.textContent = "COMPLETE";
+      stepStat.textContent = "DONE";
+      setProgress(100);
+      running = false;
+    }
+  </script>
 </body>
 </html>
