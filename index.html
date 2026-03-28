@@ -1,1 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kian V - Portfolio</title>
+  <style>
+    :root {
+      --bg: #0a0f1c;
+      --text: #e2e8f0;
+      --accent: #3b82f6;
+      --secondary: #22d3ee;
+      --card-bg: #1e2937;
+    }
 
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --text: #1e2937;
+      --accent: #2563eb;
+      --secondary: #06b6d4;
+      --card-bg: #f1f5f9;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: all 0.4s ease;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(10, 15, 28, 0.98);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      padding: 1.2rem 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .logo {
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.8rem;
+      font-weight: 500;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--secondary);
+    }
+
+    #theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.7rem;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 0 6%;
+      background: linear-gradient(135deg, #0a0f1c 0%, #1e2a44 100%);
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 80px;
+      flex-wrap: wrap;
+    }
+
+    .hero-text h1 {
+      font-size: 4.5rem;
+      line-height: 1.05;
+      margin-bottom: 1rem;
+    }
+
+    .hero-text .highlight {
+      color: #3b82f6;
+    }
+
+    .hero-text p {
+      font-size: 1.35rem;
+      margin-bottom: 2.5rem;
+      opacity: 0.9;
+      max-width: 520px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 14px 34px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #3b82f6, #22d3ee);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 2px solid #22d3ee;
+    }
+
+    .btn-primary:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4); }
+    .btn-secondary:hover { background: #22d3ee; color: #0a0f1c; }
+
+    .hero-photo {
+      flex-shrink: 0;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 12px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* About Me */
+    .about {
+      padding: 120px 6%;
+      background: var(--bg);
+      text-align: center;
+    }
+
+    .about h2 {
+      font-size: 2.8rem;
+      margin-bottom: 30px;
+      color: var(--accent);
+    }
+
+    .about-content {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      opacity: 0.95;
+    }
+
+    /* Tools & Technologies */
+    .tools {
+      padding: 120px 6%;
+      background: var(--bg);
+      text-align: center;
+    }
+
+    .tools h2 {
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .tools p.subtitle {
+      font-size: 1.25rem;
+      margin-bottom: 70px;
+      opacity: 0.85;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 25px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .tech-card {
+      background: var(--card-bg);
+      padding: 35px 20px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .tech-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25);
+    }
+
+    .tech-logo {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      margin-bottom: 18px;
+      transition: transform 0.3s;
+    }
+
+    .tech-card:hover .tech-logo {
+      transform: scale(1.1);
+    }
+
+    .tech-card h3 {
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+
+    /* Contact Section */
+    .contact {
+      padding: 120px 6%;
+      background: var(--bg);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 80px;
+      align-items: flex-start;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .contact-info {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .contact-info h2 {
+      font-size: 2.4rem;
+      margin-bottom: 40px;
+      color: var(--accent);
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      font-size: 1.15rem;
+    }
+
+    .info-item i {
+      font-size: 1.5rem;
+      color: var(--secondary);
+      width: 30px;
+    }
+
+    .social-links {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .social-links a {
+      font-size: 1.8rem;
+      color: var(--text);
+      transition: color 0.3s;
+    }
+
+    .social-links a:hover {
+      color: var(--secondary);
+    }
+
+    .contact-form {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 18px;
+      background: #162033;
+      border: none;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .form-input::placeholder {
+      color: #64748b;
+    }
+
+    .message-box {
+      height: 160px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(90deg, #ec4899, #f97316);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
+    }
+
+    @media (max-width: 968px) {
+      .hero-text h1 { font-size: 3.4rem; }
+      .contact { flex-direction: column; }
+    }
+
+    /* Optional: Very subtle music indicator */
+    .music-indicator {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 1.1rem;
+      opacity: 0.6;
+      z-index: 100;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">KV</div>
+    
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Skills</a>
+      <a href="#">Certificates</a>
+      <a href="#">Projects</a>
+      <a href="#">Contact</a>
+    </div>
+
+    <button id="theme-toggle" aria-label="Toggle theme">⚙️</button>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Hi, I'm <span class="highlight">777zent</span></h1>
+        <p>Web Developer & Student passionate about creating beautiful, functional websites.</p>
+        
+        <div class="hero-buttons">
+          <a href="#" class="btn btn-primary">Get in Touch</a>
+          <a href="#" class="btn btn-secondary">View Work</a>
+        </div>
+      </div>
+
+      <div class="hero-photo">
+        <img src="https://raw.githubusercontent.com/Aizentky/devdevdev/main/kianweb.png" 
+             alt="Kian V">
+      </div>
+    </div>
+  </section>
+
+  <!-- About Me -->
+  <section class="about">
+    <h2>About Me</h2>
+    <div class="about-content">
+      <p>
+        Hi! I'm Kian V, a passionate web developer and student with a strong interest in building 
+        clean, functional, and visually appealing websites. I enjoy turning ideas into reality 
+        using modern web technologies.
+      </p>
+      <p style="margin-top: 25px;">
+        Currently exploring full-stack development, data analysis, and continuously learning 
+        new tools and frameworks to improve my craft.
+      </p>
+    </div>
+  </section>
+
+  <!-- Tools & Technologies -->
+  <section class="tools">
+    <h2>Tools & Technologies</h2>
+    <p class="subtitle">Web Development & Data Analysis</p>
+    
+    <div class="tech-grid">
+      <div class="tech-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968267.png" class="tech-logo" alt="HTML5">
+        <h3>HTML5</h3>
+      </div>
+      <div class="tech-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png" class="tech-logo" alt="JavaScript">
+        <h3>JavaScript</h3>
+      </div>
+      <div class="tech-card">
+        <img src="https://freepnglogo.com/images/all_img/python-1d15.png" class="tech-logo" alt="Python">
+        <h3>Python</h3>
+      </div>
+      <div class="tech-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968350.png" class="tech-logo" alt="Java">
+        <h3>Java</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact">
+    <div class="contact-info">
+      <h2>Contact Information</h2>
+      
+      <div class="info-item">
+        <i>✉️</i>
+        <span>777zent@gmail.com</span>
+      </div>
+      <div class="info-item">
+        <i>📞</i>
+        <span>+63 912 345 6789</span>
+      </div>
+      <div class="info-item">
+        <i>📍</i>
+        <span>Batangas City, Philippines</span>
+      </div>
+
+      <div class="social-links">
+        <a href="#" target="_blank">🐙</a>
+        <a href="#" target="_blank">🔗</a>
+        <a href="#" target="_blank">📘</a>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" class="form-input" placeholder="Your Name">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" class="form-input" placeholder="Your Email">
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea class="form-input message-box" placeholder="Your Message"></textarea>
+      </div>
+      <button class="submit-btn">Send Message</button>
+    </div>
+  </section>
+
+  <!-- Background Music Only (No Video) -->
+  <audio id="bgMusic" autoplay loop>
+    <source src="https://raw.githubusercontent.com/Aizentky/gangstababy/main/gangstababy.mp4" type="audio/mp4">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Optional subtle indicator -->
+  <div class="music-indicator">♪ Now Playing: Gangsta Baby</div>
+
+  <script>
+    const music = document.getElementById("bgMusic");
+
+    // Unmute and play after first user interaction (required by most browsers)
+    document.addEventListener("click", () => {
+      if (music.muted) {
+        music.muted = false;
+        music.play().catch(err => console.log("Music play prevented:", err));
+      }
+    }, { once: true }); // Only run once
+
+    // Optional: Pause music when tab is not visible
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        music.pause();
+      } else {
+        music.play();
+      }
+    });
+  </script>
+
+  <script>
+    const toggleBtn = document.getElementById('theme-toggle');
+    const body = document.body;
+
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    body.setAttribute('data-theme', savedTheme);
+
+    toggleBtn.addEventListener('click', () => {
+      const current = body.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  </script>
+</body>
+</html>
